@@ -83,8 +83,6 @@ FusionAge/
 │   ├── clock_performance_analysis/    # Performance metrics and comparisons
 │   └── disease_mortality_association/ # Disease and mortality association analyses
 ├── space_aging/                       # Spaceflight (Inspiration4) analysis
-├── biolearn/                          # Biolearn library (baseline clock implementations)
-├── one-offs/                          # Publication figures, tables, and supplementary analyses
 ├── environment.yml                    # Conda environment specification
 └── README.md
 ```
