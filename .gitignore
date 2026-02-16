@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+__*.csv
+raw_data/**/*.csv
+processed_data/**/*.csv
+model_training_and_evaluation/**/*df_X_*
+model_training_and_evaluation/**/*df_y_*
+model_training_and_evaluation/**/*eid*
+model_training_and_evaluation/**/*SHAP_values*
