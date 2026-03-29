@@ -1,9 +1,28 @@
 __pycache__/
 *.pyc
-__*.csv
-raw_data/**/*.csv
-processed_data/**/*.csv
-model_training_and_evaluation/**/*df_X_*
-model_training_and_evaluation/**/*df_y_*
-model_training_and_evaluation/**/*eid*
-model_training_and_evaluation/**/*SHAP_values*
+.DS_Store
+.idea/
+**/.ipynb_checkpoints/
+
+# Real cohort data at repo root (large; not for GitHub)
+/raw_data/
+/processed_data/
+/space_aging/
+
+# Dummy data IS committed — see dummy_data/README.md
+
+# Local pipelines and supporting trees (keep on workstations)
+data_processing/
+model_training/
+model_training_and_evaluation/
+performance_analysis/
+biolearn/
+one-offs/
+Nasser_Chams/
+tools/
+data/
+
+# Notebook-sized artifacts
+**/df_X_*
+**/df_y_*
+**/SHAP_values*
