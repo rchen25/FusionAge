@@ -4,21 +4,25 @@ __pycache__/
 .idea/
 **/.ipynb_checkpoints/
 
-# Large local pipelines and data (keep on secure workstations / clusters only)
-raw_data/
-processed_data/
+# Real cohort data at repo root (large; not for GitHub)
+/raw_data/
+/processed_data/
+/space_aging/
+
+# Dummy data IS committed — see dummy_data/README.md
+
+# Local pipelines and supporting trees (keep on workstations)
 data_processing/
 model_training/
 model_training_and_evaluation/
 performance_analysis/
-space_aging/
 biolearn/
 one-offs/
 Nasser_Chams/
 tools/
+data/
 
-# Notebook-sized artifacts if reintroduced under legacy paths
+# Notebook-sized artifacts
 **/df_X_*
 **/df_y_*
-**/eid*
 **/SHAP_values*

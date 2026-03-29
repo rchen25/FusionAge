@@ -12,7 +12,6 @@ dependencies:
   - pandas
   - matplotlib
   - pip:
-    # Optional for DNN path; minimal example uses sklearn only
     - torch>=1.13
     - xgboost>=1.6
     - tqdm

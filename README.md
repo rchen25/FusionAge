@@ -12,8 +12,9 @@ This repository hosts the **FusionAge Python package**, a **minimal runnable exa
 | Path | Purpose |
 |------|---------|
 | `FusionAge/` | Library: model builders (`model.py`), cross-validation (`training.py`), metrics & age acceleration (`performance_evaluation_stats.py`), PhenoAge/SHAP helpers (`utils.py`). |
-| `examples/` | `minimal_train_and_predict.py` — smoke test with **dummy** Gaussian data (no real cohorts). |
-| `supplementary_material/` | Journal supplementary tables (Word/Excel) and supplementary figures document from the NPJ Digital Medicine submission. |
+| `examples/` | `minimal_train_and_predict.py` — builds and trains a FusionAge DNN on synthetic data. |
+| `dummy_data/` | Synthetic CSVs mirroring `raw_data/`, `processed_data/`, and `space_aging/` schema (no real participant data). |
+| `supplementary_material/` | Journal supplementary tables (Word/Excel), supplementary figures, and submission zip from the NPJ Digital Medicine submission. |
 | `environment.yml` | Conda-oriented dependencies for the library + example. |
 
 ## Quick start
