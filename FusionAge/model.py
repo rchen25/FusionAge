@@ -25,12 +25,35 @@ Reference:
 
 import copy
 import numpy as np
-import torch
-import torch.nn as nn
-import tqdm
 from sklearn.linear_model import ElasticNetCV, LassoCV, LinearRegression
 from sklearn.model_selection import GridSearchCV
 import xgboost as xgb
+
+try:
+    import torch
+    import torch.nn as nn
+except ImportError:  # sklearn-only installs (e.g. public minimal example)
+    torch = None  # type: ignore
+    nn = None  # type: ignore
+
+
+def _require_torch():
+    if torch is None or nn is None:
+        raise ImportError(
+            "PyTorch is required for DNN helpers. Install with: pip install torch"
+        )
+    return torch, nn
+
+
+def _epoch_bar(iterable, *, disable, **kwargs):
+    """tqdm progress bar, or plain iterable if tqdm is not installed."""
+    if disable:
+        return iterable
+    try:
+        import tqdm
+        return tqdm.tqdm(iterable, mininterval=0, **kwargs)
+    except ImportError:
+        return iterable
 
 
 # ---------------------------------------------------------------------------
@@ -267,6 +290,7 @@ def build_fusionage_dnn(input_size,
     nn.Sequential
         The DNN model.
     """
+    _, nn = _require_torch()
     return nn.Sequential(
         # Hidden block 1
         nn.Linear(input_size, hidden_size),
@@ -328,6 +352,7 @@ def build_fusionage_dnn_deep(input_size,
     nn.Sequential
         The DNN model.
     """
+    _, nn = _require_torch()
     return nn.Sequential(
         # Hidden block 1
         nn.Linear(input_size, hidden_size),
@@ -400,6 +425,7 @@ def prepare_tensors(X_train, y_train, X_test, y_test):
     tuple of torch.Tensor
         (X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor)
     """
+    torch, _ = _require_torch()
     X_train_t = torch.tensor(np.array(X_train), dtype=torch.float32)
     y_train_t = torch.tensor(np.array(y_train), dtype=torch.float32).reshape(-1, 1)
     X_test_t = torch.tensor(np.array(X_test), dtype=torch.float32)
@@ -458,6 +484,7 @@ def train_dnn(model,
     best_mse : float
         Best validation MSE achieved during training.
     """
+    torch, nn = _require_torch()
     optimizer = torch.optim.SGD(model.parameters(),
                                 lr=learning_rate,
                                 weight_decay=weight_decay)
@@ -471,20 +498,23 @@ def train_dnn(model,
 
     for epoch in range(n_epochs):
         model.train()
-        with tqdm.tqdm(batch_start, unit="batch", mininterval=0,
-                       disable=not verbose) as bar:
-            bar.set_description(f"Epoch {epoch}")
-            for start in bar:
-                X_batch = X_train[start:start + batch_size]
-                y_batch = y_train[start:start + batch_size]
+        bar = _epoch_bar(
+            batch_start, unit="batch", disable=not verbose,
+        )
+        for start in bar:
+            if verbose and hasattr(bar, "set_description"):
+                bar.set_description(f"Epoch {epoch}")
+            X_batch = X_train[start:start + batch_size]
+            y_batch = y_train[start:start + batch_size]
 
-                y_pred = model(X_batch)
-                loss = loss_fn(y_pred, y_batch)
+            y_pred = model(X_batch)
+            loss = loss_fn(y_pred, y_batch)
 
-                optimizer.zero_grad()
-                loss.backward()
-                optimizer.step()
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
+            if verbose and hasattr(bar, "set_postfix"):
                 bar.set_postfix(mse=float(loss))
 
         # Evaluate on validation set at end of each epoch
@@ -531,7 +561,8 @@ def predict(model, X):
     np.ndarray
         Predicted biological age, shape (n_samples,).
     """
-    if isinstance(model, nn.Module):
+    if nn is not None and isinstance(model, nn.Module):
+        torch, _ = _require_torch()
         if not isinstance(X, torch.Tensor):
             X = torch.tensor(np.array(X), dtype=torch.float32)
         model.eval()

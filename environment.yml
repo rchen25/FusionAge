@@ -1,0 +1,19 @@
+# Minimal environment for the public FusionAge repo (library + examples).
+# For full paper replication, use institutional UK Biobank/NHANES access and local pipelines.
+name: fusionage
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.9,<3.12
+  - pip
+  - numpy>=1.20
+  - scipy
+  - scikit-learn>=1.0
+  - pandas
+  - matplotlib
+  - pip:
+    # Optional for DNN path; minimal example uses sklearn only
+    - torch>=1.13
+    - xgboost>=1.6
+    - tqdm
+    - shap
